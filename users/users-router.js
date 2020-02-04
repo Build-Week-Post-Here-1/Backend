@@ -31,4 +31,27 @@ router.get('/:id', restricted, (req, res) => {
     })
     .catch(err => res.send(err));
 });
+
+//PUT /api/users/:id   edit post
+router.put('/:id', restricted, (req, res) => {
+  const item = req.body;
+  const id = req.params.id;
+  
+  if(!item.username || !item.password){
+      res.status(404).json({errorMessage: "Please provide username and password."})
+  }else {
+      Users.update(id, item)
+          .then(editUser => {
+              if(editUser){
+                  res.status(200).json({...item, id: req.params.id})
+              }else {
+                  res.status(404).json({message: "The user with the specified ID does not exist."})
+              }
+          })
+          .catch(error => {
+              console.log("Error on PUT api/users/:id", error)
+              res.status(500).json({error: "The user information could not be modified."})
+          });
+  };
+});  
 module.exports = router;
