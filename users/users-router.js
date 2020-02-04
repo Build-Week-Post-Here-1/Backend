@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const Users = require("./users-model");
-const restricted = require("../auth/authenticate-middleware");
+const restricted = require("../auth/restricted-middleware");
 
 // GET /api/users/  return all users
 router.get('/', restricted, (req, res) => {
@@ -32,7 +32,7 @@ router.get('/:id', restricted, (req, res) => {
     .catch(err => res.send(err));
 });
 
-//PUT /api/users/:id   edit post
+//PUT /api/users/:id   edit user
 router.put('/:id', restricted, (req, res) => {
   const item = req.body;
   const id = req.params.id;
