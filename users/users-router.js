@@ -22,7 +22,7 @@ router.get("/:username", restricted, (req, res) => {
     .catch(err => res.send(err));
 });
 
-// GET /api/users/:id   get user by id
+// GET /api/users/:id   get user by id  --->NOT WORKING
 router.get('/:id', restricted, (req, res) => {
     const user = req.body;
     const id = req.params.id;
