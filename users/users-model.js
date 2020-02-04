@@ -58,7 +58,7 @@ function remove(id) {
 function findSubs(user_id){
   return db('subreddits as subs')
   .join('users as u', 'u.id', 'subs.user_id')
-  .select('subs.id', 'subs.name', 'u.username')
+  .select('subs.id', 'subs.name', 'subs.subLink', 'u.username')
   .where('subs.user_id', user_id)
   .orderBy('subs.id');
 }
