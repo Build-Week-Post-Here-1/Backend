@@ -12,8 +12,8 @@ router.get('/', restricted, (req, res) => {
     .catch(err => res.send(err));
 });
 
-router.get("/:username", (req, res) => {
-
+//GET users by users name  /api/users/:username
+router.get("/:username", restricted, (req, res) => {
   Users.findByUserName( req.params.username)
     .then(user => {
         console.log(user)
@@ -24,10 +24,16 @@ router.get("/:username", (req, res) => {
 
 // GET /api/users/:id   get user by id
 router.get('/:id', restricted, (req, res) => {
+    const user = req.body;
     const id = req.params.id;
-    Users.findById(id)
-    .then(user => {
-        res.json(user);
+    Users.findById(id, user)
+    .then(findUser => {
+        console.log("user ID:", id)
+        if(findUser){
+         res.status(200).json({...user, id: req.params.id})
+        }else {
+            res.status(404).json({message: "The user with the specified ID does not exist."})
+        }
     })
     .catch(err => res.send(err));
 });
@@ -54,4 +60,20 @@ router.put('/:id', restricted, (req, res) => {
           });
   };
 });  
+
+//DELETE  /api/users/:id  Delete user by id
+router.delete('/:id', (req, res) => {
+    const {id} = req.params;
+    Users.remove(id)
+      .then(() => {
+      res.status(204).json({message: "User was removed successfully"})
+      })
+      .catch(error => {
+        console.log("There was an error on DELETE /api/users/:id", error)
+        res.status(500).json({
+          message: "Error removing user"
+        })
+      });
+  });
+  
 module.exports = router;
