@@ -9,7 +9,9 @@ module.exports = {
   findBy,
   findByUserName,
   update,
-  remove
+  remove,
+  findSubs,
+  addSub
 };
 
 function find(){
@@ -24,7 +26,7 @@ async function add(user){
   const [id] = await db('users')
   .insert(user, 'id')
   .returning('id');
-  return findById(id); //do I need this line??
+  return findById(id); 
 };
 
 // function findById(id){
@@ -32,6 +34,7 @@ async function add(user){
 //   .where({id})
 //   .first();
 // };
+
 function findById(id){
   return findBy({id}).first();
 }
@@ -50,4 +53,18 @@ function remove(id) {
   return db('users')
     .where('id', id)
     .del();
+}
+
+function findSubs(user_id){
+  return db('subreddits as subs')
+  .join('users as u', 'u.id', 'subs.user_id')
+  .select('subs.id', 'subs.name', 'u.username')
+  .where('subs.user_id', user_id)
+  .orderBy('subs.id');
+}
+
+function addSub(sub){
+  return db('subreddits')
+  .insert(sub)
+  .then(ids => ({id: ids[0]}));
 }

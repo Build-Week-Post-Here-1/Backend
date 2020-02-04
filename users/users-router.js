@@ -62,7 +62,7 @@ router.put('/:id', restricted, (req, res) => {
 });  
 
 //DELETE  /api/users/:id  Delete user by id
-router.delete('/:id', (req, res) => {
+router.delete('/:id', restricted, (req, res) => {
     const {id} = req.params;
     Users.remove(id)
       .then(() => {
@@ -74,6 +74,46 @@ router.delete('/:id', (req, res) => {
           message: "Error removing user"
         })
       });
+  });
+
+// GET api/users/:id/subreddits  get all subreddits by user id
+  router.get('/:id/subreddits', restricted, (req, res) => {
+    const { id } = req.params;
+  
+    Users.findSubs(id)
+    .then(subs => {
+      if (subs.length) {
+        res.json(subs);
+      } else {
+        res.status(404).json({ message: 'Could not find subreddit for given user' })
+      }
+    })
+    .catch(err => {
+      console.log("Error GET api/users/:id/subreddits", err)
+      res.status(500).json({ message: 'Failed to get subreddits' });
+    });
+  });
+
+  //PUT api/users/:id/subreddits
+  router.post('/:id/subreddits', restricted, (req, res) => {
+    const subData = req.body;
+    const { id } = req.params;
+    subData.user_id = id; 
+  
+    Users.findById(id)
+    .then(user => {
+      if (user) {
+        Users.addSub(subData)
+        .then(sub => {
+          res.status(201).json(sub);
+        })
+      } else {
+        res.status(404).json({ message: 'Could not find user with given id.' })
+      }
+    })
+    .catch (err => {
+      res.status(500).json({ message: 'Failed to save new subreddit' });
+    });
   });
   
 module.exports = router;

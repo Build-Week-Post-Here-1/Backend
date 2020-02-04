@@ -4,7 +4,7 @@ const helmet = require('helmet');
 
 const authenticate = require('../auth/restricted-middleware');
 const authRouter = require('../auth/auth-router');
-// const postsRouter = require('../posts/posts-router');
+// const subRouter = require('../subreddits/subreddits-router');
 
 const userRouter = require('../users/users-router');
 
@@ -16,7 +16,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use('/api/auth', authRouter);
-// server.use('/api/posts', authenticate, postsRouter);
+// server.use('/api/subreddits', authenticate, subRouter);
 server.use('/api/users', authenticate, userRouter);
 
 module.exports = server;
