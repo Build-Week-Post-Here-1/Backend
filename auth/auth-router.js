@@ -49,26 +49,6 @@ router.post("/login", (req, res) => {
     });
 });
 
-// router.post("/tokenLogin", (req, res) => {
-//   const { token } = req.body;
-//   const secret = process.env.JWT_SECRET || "keep it secret";
-//   console.log(token, secret);
-//   const decoded = jwt.verify(token, secret);
-//   console.log(decoded);
-//   Users.findByUserName(decoded.username)
-//     .then(user => {
-//       res.status(200).json({
-//         user,
-//         message: "Successfully logged in via token."
-//       });
-//     })
-//     .catch(err => {
-//       res.status(500).json({
-//         err,
-//         message: "Error logging in via token"
-//       });
-//     });
-// });
 
 function signToken(user) {
   const payload = {
@@ -76,7 +56,7 @@ function signToken(user) {
   };
   const secret = process.env.JWT_SECRET || "keep it secret";
   const options = {
-    expiresIn: "2hr"
+    expiresIn: "24hr"
   };
   return jwt.sign(payload, secret, options);
 }

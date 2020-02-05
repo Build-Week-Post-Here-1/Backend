@@ -7,19 +7,21 @@ const restricted = require("../auth/restricted-middleware");
 router.get('/', restricted, (req, res) => {
     Users.find()
     .then(users => {
-      res.json(users);
+      res.status(200).json(users);
     })
-    .catch(err => res.send(err));
+    .catch(err => {
+      res.status(500).json(err);
+});
 });
 
 //GET users by users name  /api/users/:username
 router.get("/:username", restricted, (req, res) => {
   Users.findByUserName( req.params.username)
     .then(user => {
-        console.log(user)
-      return res.json(user);
+        
+      res.status(200).json(user);
     })
-    .catch(err => res.send(err));
+    .catch(err => res.status(500).json(err, "Error getting user by username"));
 });
 
 // GET /api/users/:id   get user by id  --->NOT WORKING
@@ -94,7 +96,7 @@ router.delete('/:id', restricted, (req, res) => {
     });
   });
 
-  //PUT api/users/:id/subreddits
+  //POST api/users/:id/subreddits
   router.post('/:id/subreddits', restricted, (req, res) => {
     const subData = req.body;
     const { id } = req.params;

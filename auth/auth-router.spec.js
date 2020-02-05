@@ -37,5 +37,43 @@ describe('server.js', function() {
                 .expect(401)
         })
     });
-   })
+
+   describe('add', () => {
+       it('should add user into db', async () => {
+           await Users.add({
+               username: 'chris',
+               password: 'password'
+           });
+           const users = await db('users');
+
+           expect(users).toHaveLength(1);
+       });
+       it('should add user into db', async () => {
+           const {id} = await Users.add({
+               username: 'chris',
+               password: 'password'
+           })
+           let user = await db('users')
+           .where({id})
+           .first();
+
+           expect(user.username).toBe('chris')
+       });
+     });    
+
+     it.skip('setting sample  header', function(){
+        return request(server)  //return here when testing async code
+        .post('/login')
+        .send({username: 'me', password: 'pass'})
+        .then(res => {
+            const token = res.body.token;
+            return request(server)
+            .get('/')
+            .set('authorization', token)
+            .then(res => {
+                expect(Array.isArray(res.body)).toBe(true);
+            });
+        });  
+        })
+   });
 });

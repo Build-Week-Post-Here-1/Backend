@@ -11,7 +11,9 @@ module.exports = {
   update,
   remove,
   findSubs,
-  addSub
+  addSub,
+  editSub,
+  delSub
 };
 
 function find(){
@@ -67,4 +69,16 @@ function addSub(sub){
   return db('subreddits')
   .insert(sub)
   .then(ids => ({id: ids[0]}));
+}
+
+function editSub(id, changes) {
+  return db('subreddits')
+    .where({ id })
+    .update(changes);
+}
+
+function delSub(id) {
+  return db('subreddits')
+    .where('id', id)
+    .del();
 }
