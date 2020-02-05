@@ -8,5 +8,4 @@ describe('server.js', () => {
             expect(process.env.DB_ENV).toBe('testing')
         })
     });
-
 })

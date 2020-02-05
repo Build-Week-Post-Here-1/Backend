@@ -4,7 +4,7 @@ const helmet = require('helmet');
 
 const authenticate = require('../auth/restricted-middleware');
 const authRouter = require('../auth/auth-router');
-// const subRouter = require('../subreddits/subreddits-router');
+
 
 const userRouter = require('../users/users-router');
 
@@ -20,7 +20,7 @@ server.get("/", (req, res) => {
   });
 
 server.use('/api/auth', authRouter);
-// server.use('/api/subreddits', authenticate, subRouter);
+
 server.use('/api/users', authenticate, userRouter);
 
 module.exports = server;
