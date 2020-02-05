@@ -117,5 +117,43 @@ router.delete('/:id', restricted, (req, res) => {
       res.status(500).json({ message: 'Failed to save new subreddit' });
     });
   });
+
+  //PUT /api/users/:id/subreddits   edit subreddit by subreddit id
+router.put('/:id/subreddits', restricted, (req, res) => {
+  const item = req.body;
+  const id = req.params.id;
+  
+  if(!item.name){
+      res.status(404).json({errorMessage: "Please provide name of subreddit."})
+  }else {
+      Users.editSub(id, item)
+          .then(editsr => {
+              if(editsr){
+                  res.status(200).json({...item, id: req.params.id})
+              }else {
+                  res.status(404).json({message: "The subreddit with the specified ID does not exist."})
+              }
+          })
+          .catch(error => {
+              console.log("Error on PUT api/users/:id/subreddits", error)
+              res.status(500).json({error: "The subreddit information could not be modified."})
+          });
+  };
+});  
+
+//DELETE  /api/users/:id/subreddit  Delete subreddit by subreddit id
+router.delete('/:id/subreddits', restricted, (req, res) => {
+  const {id} = req.params;
+  Users.delSub(id)
+    .then(() => {
+    res.status(204).json({message: "Subreddit was removed successfully"})
+    })
+    .catch(error => {
+      console.log("There was an error on DELETE /api/users/:id/subreddit", error)
+      res.status(500).json({
+        message: "Error removing subreddit"
+      })
+    });
+});
   
 module.exports = router;
